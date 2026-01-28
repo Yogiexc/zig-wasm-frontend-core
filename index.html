@@ -23,6 +23,28 @@
             display: flex;
             gap: 1rem;
             align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            border: 1px solid #333;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .group-title {
+            font-weight: bold;
+            color: #aaa;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
         }
 
         button {
@@ -32,7 +54,7 @@
             padding: 0.5rem 1rem;
             cursor: pointer;
             font-family: inherit;
-            font-size: 1rem;
+            font-size: 0.9rem;
             transition: background 0.2s;
         }
 
@@ -45,15 +67,21 @@
             cursor: not-allowed;
         }
 
+        input[type="range"] {
+            margin: 0 0.5rem;
+        }
+
         .canvas-container {
             display: flex;
             gap: 2rem;
             flex-wrap: wrap;
+            margin-top: 1rem;
         }
 
         canvas {
             border: 1px solid #444;
             background: #000;
+            max-width: 100%;
         }
 
         #status {
@@ -65,22 +93,37 @@
             margin-top: 1rem;
             border: 1px solid #333;
             padding: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.9rem;
         }
 
         .result-line {
-            margin: 0.5rem 0;
+            margin: 0.2rem 0;
+            border-bottom: 1px solid #222;
+            padding-bottom: 0.2rem;
         }
 
-        .highlight {
+        .highlight-zig {
             color: #f90;
             font-weight: bold;
+        }
+
+        .highlight-js {
+            color: #f0f;
+            font-weight: bold;
+        }
+
+        .faster {
+            color: #0f0;
+            margin-left: 0.5rem;
+            font-size: 0.8rem;
         }
     </style>
 </head>
 
 <body>
-    <h1>BARE-METAL IMAGE PROCESSOR (ZIG + WASM)</h1>
-
+    <h1>BARE-METAL IMAGE PROCESSOR</h1>
     <div id="status">Initializing WASM...</div>
 
     <div class="controls">
@@ -88,12 +131,48 @@
             Load Image:
             <input type="file" id="upload" accept="image/*">
         </label>
+        <button id="btn-reset" disabled>Reset Orig</button>
     </div>
 
     <div class="controls">
-        <button id="btn-js" disabled>Run in JS</button>
-        <button id="btn-zig" disabled>Run in Zig (WASM)</button>
-        <button id="btn-reset" disabled>Reset</button>
+        <!-- Simple Filters -->
+        <div class="control-group">
+            <span class="group-title">Standard Filters</span>
+            <div class="row">
+                <button class="filter-btn" data-type="grayscale">Grayscale</button>
+                <button class="filter-btn" data-type="invert">Invert</button>
+                <button class="filter-btn" data-type="sepia">Sepia</button>
+                <button class="filter-btn" data-type="sobel">Sobel</button>
+            </div>
+        </div>
+
+        <!-- Parametric Filters -->
+        <div class="control-group">
+            <span class="group-title">Threshold (0-255)</span>
+            <div class="row">
+                <input type="range" id="param-threshold" min="0" max="255" value="128">
+                <span id="val-threshold">128</span>
+                <button class="filter-btn" data-type="threshold">Run</button>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <span class="group-title">Brightness (-100 to 100)</span>
+            <div class="row">
+                <input type="range" id="param-brightness" min="-100" max="100" value="20">
+                <span id="val-brightness">20</span>
+                <button class="filter-btn" data-type="brightness">Run</button>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <span class="group-title">Box Blur (Radius 1-10)</span>
+            <div class="row">
+                <input type="range" id="param-blur" min="1" max="10" value="2">
+                <span id="val-blur">2</span>
+                <button class="filter-btn" data-type="blur">Run</button>
+            </div>
+        </div>
     </div>
 
     <div id="results">
@@ -107,7 +186,7 @@
             <canvas id="canvas-original"></canvas>
         </div>
         <div>
-            <h3>Processed</h3>
+            <h3>Processed (Run both JS & Zig to compare)</h3>
             <canvas id="canvas-processed"></canvas>
         </div>
     </div>
