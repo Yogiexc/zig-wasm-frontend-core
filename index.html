@@ -1,11 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Zig WASM Image Processor</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #111;
+            color: #eee;
+            padding: 2rem;
+        }
+
+        h1 {
+            border-bottom: 2px solid #555;
+            padding-bottom: 0.5rem;
+        }
+
+        .controls {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        button {
+            background: #333;
+            color: #fff;
+            border: 1px solid #777;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #555;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .canvas-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        canvas {
+            border: 1px solid #444;
+            background: #000;
+        }
+
+        #status {
+            color: cyan;
+            margin-bottom: 1rem;
+        }
+
+        #results {
+            margin-top: 1rem;
+            border: 1px solid #333;
+            padding: 1rem;
+        }
+
+        .result-line {
+            margin: 0.5rem 0;
+        }
+
+        .highlight {
+            color: #f90;
+            font-weight: bold;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Hello World</h1>    
+    <h1>BARE-METAL IMAGE PROCESSOR (ZIG + WASM)</h1>
+
+    <div id="status">Initializing WASM...</div>
+
+    <div class="controls">
+        <label>
+            Load Image:
+            <input type="file" id="upload" accept="image/*">
+        </label>
+    </div>
+
+    <div class="controls">
+        <button id="btn-js" disabled>Run in JS</button>
+        <button id="btn-zig" disabled>Run in Zig (WASM)</button>
+        <button id="btn-reset" disabled>Reset</button>
+    </div>
+
+    <div id="results">
+        <div>Log:</div>
+        <div id="log"></div>
+    </div>
+
+    <div class="canvas-container">
+        <div>
+            <h3>Original</h3>
+            <canvas id="canvas-original"></canvas>
+        </div>
+        <div>
+            <h3>Processed</h3>
+            <canvas id="canvas-processed"></canvas>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
+
 </html>
